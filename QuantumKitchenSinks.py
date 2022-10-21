@@ -1,9 +1,12 @@
 import sys
 import numpy as np
-from qiskit import QuantumCircuit, execute
+
+from qiskit import QuantumCircuit
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit import Aer
+from qiskit_machine_learning.neural_networks import OpflowQNN
 from qiskit.quantum_info.operators import Operator, Pauli
+from qiskit.opflow import AerPauliExpectation, StateFn, PauliSumOp, ListOp
 
 class QuantumKitchenSinks:
     
@@ -78,16 +81,7 @@ class QuantumKitchenSinks:
                     embedding[i, j + k*self.n_episodes] = meas[k]
         return embedding
     
-from qiskit_machine_learning.neural_networks import OpflowQNN
-from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit import Aer
 
-# from qiskit import QuantumCircuit, execute
-# from qiskit.circuit import ParameterVector
-from qiskit.quantum_info.operators import Operator, Pauli
-from qiskit.opflow import AerPauliExpectation, StateFn, PauliSumOp, ListOp
-
-from qiskit.opflow import OperatorStateFn, CircuitStateFn
 
 class ProjectedQuantumKitchenSinks:
     
@@ -138,11 +132,10 @@ class ProjectedQuantumKitchenSinks:
                 self.proj_ops = self._measurement_operator(['X', 'Y', 'Z'])
             elif self.projection=='xyz_sum':
                 self.proj_ops = []
-                for x, y, z in zip(_measurement_operator(['X']), _measurement_operator(['Y']), _measurement_operator(['Z'])):
-                    self.proj_ops.append([x, y, z])
+                for x, y, z in zip(self._measurement_operator(['X']), self._measurement_operator(['Y']), self._measurement_operator(['Z'])):
+                    self.proj_ops.append([x[0], y[0], z[0]])
             else:
                 self.proj_ops = self.projection
-            print(self.proj_ops)
         
     def _get_omega_and_beta(self):
         mask = np.zeros((self.n_episodes, self.n_features, self.n_params))
