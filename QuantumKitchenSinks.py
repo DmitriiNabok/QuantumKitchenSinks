@@ -23,7 +23,7 @@ class QuantumKitchenSinks:
             algorithm_globals.random_seed = self.seed
             self.backend = QuantumInstance(
                 Aer.get_backend("statevector_simulator"), 
-                seed_simulator=seed, seed_transpiler=seed,
+                seed_simulator=self.seed, seed_transpiler=self.seed,
             )
         # ---------------------------------------------------
         self.split = int(self.n_features/self.ansatz.num_parameters)
@@ -85,7 +85,7 @@ class QuantumKitchenSinks:
 
 class ProjectedQuantumKitchenSinks:
     
-    def __init__(self, n_features, fm, backend=None, episodes=10, stddev=2.0, seed=None, sampling='normal', projection='z', method='qnn'):
+    def __init__(self, n_features, fm, backend=None, episodes=10, stddev=2.0, seed=None, sampling='normal', projection='z', method='opflow'):
         """ """
         self.fm = fm
         self.n_features = n_features
@@ -181,7 +181,7 @@ class ProjectedQuantumKitchenSinks:
                     for i in range(1, len(op)):
                         o = o + Operator(Pauli(op[i][0]))
                 ev.append(np.real(sv.expectation_value(o)))
-        elif self.method=='qnn':
+        elif self.method=='opflow':
             fm_sfn = StateFn(self.fm)
             list_ops = []
             for op in self.proj_ops:
@@ -192,7 +192,7 @@ class ProjectedQuantumKitchenSinks:
             qnn = OpflowQNN(list_ops, input_params=self.fm.parameters, weight_params=[], exp_val=expval, gradient=None, quantum_instance=self.backend)
             ev = qnn.forward(x, []).flatten()
         else:
-            assert False, 'Unknown method!'
+            assert False, '\nUnsupported method: '+self.method
         return ev
             
     def embedding(self, X):
