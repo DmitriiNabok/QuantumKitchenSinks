@@ -3,7 +3,7 @@
 Qiskit-based implementation of the original Quantum Kitchen Sinks (QKS) algorithm by Wilson et al. (2019).
 As an extension, the library includes a variant of QKS, where the final circuit measurements are replaced with estimates of the expectation values of single qubits operators.
 
-Application of QKS to the blobs dataset is provided in `qks-tests-blobs.ipynb`.
+Application of QKS to the blobs dataset is provided in `tutorials/qks-tests-blobs.ipynb`.
 
 
 ## References
